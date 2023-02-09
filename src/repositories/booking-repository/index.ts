@@ -1,13 +1,21 @@
 import { prisma } from "@/config";
+import { createRoomWithHotelId } from "../../factories";
 
 async function findUserBookings(userId: number) {
-  return prisma.booking.findMany({
+  return await prisma.booking.findMany({
     where: {
-      id: userId,
+      userId: userId,
     },
     // include: {
     //   Rooms: true,
     // },
+  });
+}
+async function findMany(roomId: number) {
+  return await prisma.booking.findMany({
+    where: {
+      roomId: roomId,
+    },
   });
 }
 
@@ -21,21 +29,34 @@ async function postBooking(userId: number, roomId: number) {
 }
 
 //tem que arrumar
-async function findBookingsById(hotelId: number) {
-  return prisma.hotel.findFirst({
+async function findBookingsById(bookingId: number) {
+  return await prisma.booking.findFirst({
     where: {
-      id: hotelId,
+      id: bookingId,
     },
-    include: {
-      Rooms: true,
+    // include: {
+    //   Rooms: true,
+    // },
+  });
+}
+
+async function updateBooking(roomId: number, bookingId: number) {
+  return await prisma.booking.update({
+    where: {
+      id: bookingId,
+    },
+    data: {
+      roomId: roomId,
     },
   });
 }
 
-const hotelRepository = {
+const bookingRepository = {
   findUserBookings,
   findBookingsById,
+  findMany,
   postBooking,
+  updateBooking,
 };
 
-export default hotelRepository;
+export default bookingRepository;

@@ -18,6 +18,22 @@ async function listHotels(userId: number) {
   }
 }
 
+async function confirmStay(userId: number) {
+  //Tem enrollment?
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (!enrollment) {
+    console.log("isnt enrollment");
+    throw { name: "isnt enrollment" };
+  }
+  //Tem ticket pago isOnline false e includesHotel true
+  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
+
+  if (!ticket || ticket.status === "RESERVED" || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) {
+    console.log("ticket status not reserved or is remote or doesnt have ticket or not include hotel");
+    throw { name: "ticket is remote or doesnt have ticket or not include hotel or not PAID" };
+  }
+}
+
 async function getHotels(userId: number) {
   await listHotels(userId);
 
@@ -38,6 +54,7 @@ async function getHotelsWithRooms(userId: number, hotelId: number) {
 const hotelService = {
   getHotels,
   getHotelsWithRooms,
+  confirmStay,
 };
 
 export default hotelService;
