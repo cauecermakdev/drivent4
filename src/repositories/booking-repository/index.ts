@@ -6,9 +6,11 @@ async function findUserBookings(userId: number) {
     where: {
       userId: userId,
     },
-    // include: {
-    //   Rooms: true,
-    // },
+    select: {
+      id: true,
+      //teste estao pedindo
+      Room: true,
+    },
   });
 }
 async function findMany(roomId: number) {
